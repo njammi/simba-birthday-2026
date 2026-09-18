@@ -1,0 +1,464 @@
+<title>Simba's Pit Pass</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --ink:        #211b3a;
+    --ink-soft:   #4a4368;
+    --muted:      #837da3;
+    --bg:         #fff4de;
+    --card:       #ffffff;
+    --line:       rgba(33,27,58,0.10);
+    --red:        #ff4136;
+    --red-dark:   #c81e14;
+    --orange:     #ff8a00;
+    --yellow:     #ffcd05;
+    --yellow-ink: #5c4200;
+    --blue:       #1e88ff;
+    --blue-dark:  #0056c7;
+    --green:      #2ecc71;
+    --green-dark: #1c9d56;
+    --violet:     #8e5cff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ink:        #f7f4ff;
+      --ink-soft:   #d3ccf0;
+      --muted:      #9d96c4;
+      --bg:         #171233;
+      --card:       #221c42;
+      --line:       rgba(255,255,255,0.12);
+      --red:        #ff6b60;
+      --red-dark:   #ff9086;
+      --orange:     #ffab40;
+      --yellow:     #ffd94d;
+      --yellow-ink: #3a2a00;
+      --blue:       #6fb2ff;
+      --blue-dark:  #1e88ff;
+      --green:      #5fe392;
+      --green-dark: #2ecc71;
+      --violet:     #b491ff;
+    }
+    :root:not([data-theme="light"]) h1.display { text-shadow: 3px 3px 0 var(--yellow-ink); }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ink:        #f7f4ff;
+    --ink-soft:   #d3ccf0;
+    --muted:      #9d96c4;
+    --bg:         #171233;
+    --card:       #221c42;
+    --line:       rgba(255,255,255,0.12);
+    --red:        #ff6b60;
+    --red-dark:   #ff9086;
+    --orange:     #ffab40;
+    --yellow:     #ffd94d;
+    --yellow-ink: #3a2a00;
+    --blue:       #6fb2ff;
+    --blue-dark:  #1e88ff;
+    --green:      #5fe392;
+    --green-dark: #2ecc71;
+    --violet:     #b491ff;
+  }
+  :root[data-theme="dark"] h1.display { text-shadow: 3px 3px 0 var(--yellow-ink); }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    line-height: 1.5;
+    padding-inline: 18px;
+    overflow-x: hidden;
+  }
+  .display {
+    font-family: "Fredoka", "Inter", sans-serif;
+    font-weight: 700;
+    line-height: 1.02;
+  }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .wrap { max-width: 640px; margin: 0 auto; position: relative; }
+
+  .flagstrip {
+    height: 12px;
+    margin-inline: -18px;
+    background: repeating-linear-gradient(135deg, var(--ink) 0 11px, var(--yellow) 11px 22px);
+  }
+
+  /* ---- hero + confetti ---- */
+  header.hero {
+    position: relative;
+    padding-block: 30px 4px;
+    text-align: center;
+    overflow: visible;
+  }
+  .confetti { position: absolute; inset: -8px 0 auto 0; height: 230px; pointer-events: none; z-index: 0; }
+  .confetti span {
+    position: absolute;
+    border-radius: 3px;
+    opacity: 0.85;
+  }
+
+  .mascot-wrap { width: 132px; margin: 0 auto 6px; position: relative; z-index: 1; }
+  .mascot { display: block; width: 132px; height: 132px; }
+  .age-badge {
+    position: absolute;
+    right: -18px;
+    bottom: -4px;
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    background: var(--yellow);
+    border: 3px solid var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 3px 3px 0 var(--ink);
+    transform: rotate(-9deg);
+  }
+  .age-badge span {
+    font-family: "Fredoka", sans-serif;
+    font-weight: 700;
+    font-size: 27px;
+    color: var(--red);
+    line-height: 1;
+  }
+  .age-callout {
+    position: relative; z-index: 1;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    margin: 10px 0 0;
+    font-family: "Fredoka", sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    color: var(--ink);
+  }
+  .age-callout .num {
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--red);
+    text-shadow: 2px 2px 0 var(--yellow);
+  }
+
+  .eyebrow {
+    position: relative; z-index: 1;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  h1.display {
+    position: relative; z-index: 1;
+    font-size: clamp(34px, 9.5vw, 50px);
+    margin: 6px 0 6px;
+    color: var(--red);
+    text-shadow: 3px 3px 0 var(--yellow);
+  }
+  .hero-sub {
+    position: relative; z-index: 1;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .kartrow { display: block; width: 100%; max-width: 460px; margin: 18px auto 4px; }
+
+  .quickfacts {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 18px;
+    position: relative; z-index: 1;
+  }
+  .qf {
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 12px;
+    padding: 10px 16px;
+    text-align: left;
+    box-shadow: 3px 3px 0 var(--line);
+  }
+  .qf .l { font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .qf .v { font-weight: 800; font-size: 15px; margin-top: 2px; }
+  .qf:nth-child(1) { border-color: var(--blue); }
+  .qf:nth-child(2) { border-color: var(--red); }
+  .qf:nth-child(3) { border-color: var(--green-dark); }
+
+  section { margin-top: 30px; }
+  .section-title {
+    font-family: "Fredoka", sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .section-title .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+  .card {
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 4px 4px 0 var(--line);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 10px;
+    padding-block: 10px;
+    border-top: 1px dashed var(--line);
+  }
+  .row:first-child { border-top: none; padding-top: 0; }
+  .row .k { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-top: 2px; }
+  .row .v { font-weight: 700; font-size: 15px; }
+  .row .v small { display: block; font-weight: 400; color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+  .maplink {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 10px;
+    font-size: 13.5px; font-weight: 700;
+    color: var(--blue-dark);
+    text-decoration: none;
+    border-bottom: 2px solid currentColor;
+  }
+
+  .checklist { display: grid; gap: 10px; }
+  .check {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 12px;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 14px;
+    padding: 13px 16px;
+    align-items: start;
+    box-shadow: 3px 3px 0 var(--line);
+  }
+  .check .mark {
+    width: 30px; height: 30px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 800;
+    color: #fff;
+    margin-top: 1px;
+  }
+  .check h3 { margin: 0 0 3px; font-size: 14.5px; font-family: "Fredoka"; font-weight: 600; }
+  .check p { margin: 0; font-size: 13.5px; color: var(--ink-soft); }
+
+  .callout {
+    margin-top: 12px;
+    background: color-mix(in srgb, var(--yellow) 26%, var(--card));
+    border: 2px dashed var(--yellow-ink);
+    border-radius: 14px;
+    padding: 13px 16px;
+    font-size: 13.5px;
+    color: var(--ink);
+  }
+  .callout b { color: var(--red); }
+
+  .waiver-card {
+    background: linear-gradient(160deg, var(--violet) 0%, var(--blue-dark) 100%);
+    border-radius: 20px;
+    padding: 26px 22px;
+    text-align: center;
+    color: #fff;
+    border: 2px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--line);
+  }
+  .waiver-card .section-title { color: rgba(255,255,255,0.85); justify-content: center; }
+  .waiver-card h2.display { font-size: 30px; color: #fff; margin: 6px 0 8px; text-shadow: none; }
+  .waiver-card p { color: rgba(255,255,255,0.85); font-size: 13.5px; margin: 0 0 18px; }
+  .btn {
+    display: inline-block;
+    background: var(--yellow);
+    color: var(--yellow-ink);
+    font-family: "Fredoka";
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    padding: 13px 28px;
+    border-radius: 999px;
+    border: 2px solid var(--ink);
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.35);
+  }
+  .fineprint { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 14px; }
+
+  footer.page {
+    margin-top: 36px;
+    padding-block: 22px 40px;
+    text-align: center;
+  }
+  footer.page .display { font-size: 26px; color: var(--green-dark); }
+  footer.page p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+</style>
+
+<div class="wrap">
+  <div class="flagstrip"></div>
+
+  <header class="hero">
+    <div class="confetti" aria-hidden="true">
+      <span style="left:6%;top:14px;width:10px;height:10px;background:var(--blue);transform:rotate(18deg);"></span>
+      <span style="left:16%;top:70px;width:8px;height:8px;border-radius:50%;background:var(--green);"></span>
+      <span style="left:88%;top:20px;width:9px;height:9px;background:var(--violet);transform:rotate(-12deg);"></span>
+      <span style="left:80%;top:90px;width:7px;height:7px;border-radius:50%;background:var(--red);"></span>
+      <span style="left:8%;top:130px;width:9px;height:9px;background:var(--yellow);transform:rotate(30deg);"></span>
+      <span style="left:92%;top:150px;width:8px;height:8px;border-radius:50%;background:var(--blue);"></span>
+      <span style="left:50%;top:4px;width:7px;height:7px;background:var(--red);transform:rotate(45deg);"></span>
+      <span style="left:26%;top:8px;width:6px;height:6px;border-radius:50%;background:var(--orange);"></span>
+      <span style="left:70%;top:10px;width:6px;height:6px;border-radius:50%;background:var(--green);"></span>
+    </div>
+
+    <div class="mascot-wrap">
+    <svg class="mascot" viewBox="0 0 140 140" aria-label="Cartoon lion mascot wearing a racing helmet and goggles">
+      <g transform="translate(70,72)">
+        <g stroke="var(--orange)" stroke-width="9" stroke-linecap="round">
+          <line x1="0" y1="-58" x2="0" y2="-40"/>
+          <line x1="29" y1="-50" x2="20" y2="-34" transform="rotate(0)"/>
+          <line x1="41" y1="-41" x2="29" y2="-29"/>
+          <line x1="50" y1="-29" x2="35" y2="-20"/>
+          <line x1="58" y1="0" x2="40" y2="0"/>
+          <line x1="50" y1="29" x2="35" y2="20"/>
+          <line x1="41" y1="41" x2="29" y2="29"/>
+          <line x1="29" y1="50" x2="20" y2="34"/>
+          <line x1="0" y1="58" x2="0" y2="40"/>
+          <line x1="-29" y1="50" x2="-20" y2="34"/>
+          <line x1="-41" y1="41" x2="-29" y2="29"/>
+          <line x1="-50" y1="29" x2="-35" y2="20"/>
+          <line x1="-58" y1="0" x2="-40" y2="0"/>
+          <line x1="-50" y1="-29" x2="-35" y2="-20"/>
+          <line x1="-41" y1="-41" x2="-29" y2="-29"/>
+          <line x1="-29" y1="-50" x2="-20" y2="-34"/>
+        </g>
+        <circle r="38" fill="#f7b23b"/>
+        <circle cx="-26" cy="-26" r="12" fill="#f7b23b"/>
+        <circle cx="26" cy="-26" r="12" fill="#f7b23b"/>
+        <circle cx="-26" cy="-26" r="6" fill="#c9791f"/>
+        <circle cx="26" cy="-26" r="6" fill="#c9791f"/>
+        <ellipse cx="0" cy="10" rx="20" ry="15" fill="#ffe4ae"/>
+        <path d="M0,16 q-6,7 -12,2" fill="none" stroke="#8a4a12" stroke-width="3" stroke-linecap="round"/>
+        <path d="M0,16 q6,7 12,2" fill="none" stroke="#8a4a12" stroke-width="3" stroke-linecap="round"/>
+        <path d="M-5,14 q5,4 10,0 q-2,5 -5,5 q-3,0 -5,-5 Z" fill="#8a4a12"/>
+        <path d="M-40,-30 A40,40 0 0 1 40,-30 L34,-8 A34,30 0 0 0 -34,-8 Z" fill="var(--blue)"/>
+        <rect x="-40" y="-32" width="80" height="9" rx="4.5" fill="var(--red)"/>
+        <rect x="-30" y="-9" width="60" height="20" rx="10" fill="#20222b"/>
+        <circle cx="-15" cy="1" r="8" fill="#7fd4ff" opacity="0.9"/>
+        <circle cx="15" cy="1" r="8" fill="#7fd4ff" opacity="0.9"/>
+        <circle cx="-12" cy="-2" r="3" fill="#fff" opacity="0.8"/>
+        <circle cx="18" cy="-2" r="3" fill="#fff" opacity="0.8"/>
+      </g>
+    </svg>
+    <div class="age-badge"><span>14</span></div>
+    </div>
+
+    <div class="eyebrow">You're on the grid</div>
+    <h1 class="display">Simba's<br>Birthday Race</h1>
+    <p class="hero-sub">Go-kart racing at K1&nbsp;Speed!</p>
+    <div class="age-callout"><span class="num">14</span> years old &amp; ready to race</div>
+
+    <svg class="kartrow" viewBox="0 0 420 90" aria-label="Three cartoon go-karts racing with speed lines">
+      <g stroke="var(--ink)" stroke-width="2" opacity="0.35" stroke-linecap="round">
+        <line x1="0" y1="34" x2="26" y2="34"/><line x1="0" y1="42" x2="18" y2="42"/>
+        <line x1="140" y1="34" x2="166" y2="34"/><line x1="140" y1="42" x2="158" y2="42"/>
+        <line x1="280" y1="34" x2="306" y2="34"/><line x1="280" y1="42" x2="298" y2="42"/>
+      </g>
+      <g transform="translate(30,20)">
+        <rect x="-4" y="30" width="90" height="10" rx="3" fill="#20222b"/>
+        <circle cx="6" cy="42" r="11" fill="#20222b"/><circle cx="6" cy="42" r="4" fill="#8a93a3"/>
+        <circle cx="76" cy="42" r="11" fill="#20222b"/><circle cx="76" cy="42" r="4" fill="#8a93a3"/>
+        <path d="M0,30 L8,10 L58,10 L70,30 Z" fill="var(--red)"/>
+        <path d="M18,10 L46,10 L42,22 L22,22 Z" fill="#bfe8ff"/>
+        <circle cx="18" cy="4" r="9" fill="var(--yellow)"/>
+        <rect x="60" y="16" width="8" height="14" rx="2" fill="var(--ink)"/>
+      </g>
+      <g transform="translate(170,26)">
+        <rect x="-4" y="26" width="90" height="10" rx="3" fill="#20222b"/>
+        <circle cx="6" cy="38" r="11" fill="#20222b"/><circle cx="6" cy="38" r="4" fill="#8a93a3"/>
+        <circle cx="76" cy="38" r="11" fill="#20222b"/><circle cx="76" cy="38" r="4" fill="#8a93a3"/>
+        <path d="M0,26 L8,6 L58,6 L70,26 Z" fill="var(--blue)"/>
+        <path d="M18,6 L46,6 L42,18 L22,18 Z" fill="#bfe8ff"/>
+        <circle cx="18" cy="0" r="9" fill="var(--green)"/>
+        <rect x="60" y="12" width="8" height="14" rx="2" fill="var(--ink)"/>
+      </g>
+      <g transform="translate(310,20)">
+        <rect x="-4" y="30" width="90" height="10" rx="3" fill="#20222b"/>
+        <circle cx="6" cy="42" r="11" fill="#20222b"/><circle cx="6" cy="42" r="4" fill="#8a93a3"/>
+        <circle cx="76" cy="42" r="11" fill="#20222b"/><circle cx="76" cy="42" r="4" fill="#8a93a3"/>
+        <path d="M0,30 L8,10 L58,10 L70,30 Z" fill="var(--yellow)"/>
+        <path d="M18,10 L46,10 L42,22 L22,22 Z" fill="#bfe8ff"/>
+        <circle cx="18" cy="4" r="9" fill="var(--red)"/>
+        <rect x="60" y="16" width="8" height="14" rx="2" fill="var(--ink)"/>
+      </g>
+    </svg>
+
+    <div class="quickfacts">
+      <div class="qf"><div class="l">Date</div><div class="v mono">Sun, Sep 20</div></div>
+      <div class="qf"><div class="l">Start</div><div class="v mono">3:00 PM PST</div></div>
+      <div class="qf"><div class="l">Track</div><div class="v mono">K1 Speed ANH</div></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="section-title"><span class="dot" style="background:var(--blue)"></span>Race details</div>
+    <div class="card">
+      <div class="row">
+        <div class="k">When</div>
+        <div class="v">Sunday, September 20, 2026<small>Doors at 3:00 PM PST &mdash; please arrive by 2:45 to check in</small></div>
+      </div>
+      <div class="row">
+        <div class="k">Where</div>
+        <div class="v">K1 Speed Anaheim<small>1000 N Edward Ct, Anaheim, CA 92806</small></div>
+      </div>
+      <div class="row">
+        <div class="k">Phone</div>
+        <div class="v">(714) 632-6999</div>
+      </div>
+      <a class="maplink" href="https://www.google.com/maps/search/?api=1&query=1000+N+Edward+Ct%2C+Anaheim%2C+CA+92806" target="_blank" rel="noopener">Open in Maps &rarr;</a>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title"><span class="dot" style="background:var(--green-dark)"></span>Before you race</div>
+    <div class="checklist">
+      <div class="check">
+        <div class="mark" style="background:var(--red)">&#10003;</div>
+        <div><h3>Closed-toe shoes, mandatory</h3><p>Sandals and open-toe shoes aren't allowed on the track &mdash; you won't be able to race without them.</p></div>
+      </div>
+      <div class="check">
+        <div class="mark" style="background:var(--blue)">&#10003;</div>
+        <div><h3>Height check for karts</h3><p>58" and taller races an adult kart; 48"&ndash;58" (age 8+) races a junior kart. Adult and junior racers don't share a heat, so shorter siblings tagging along will race separately.</p></div>
+      </div>
+      <div class="check">
+        <div class="mark" style="background:var(--green-dark)">&#10003;</div>
+        <div><h3>Skip loose clothing</h3><p>Scarves, long dresses, or anything flowy can snag inside the kart. Ponytail your hair if it's long &mdash; helmets are provided.</p></div>
+      </div>
+      <div class="check">
+        <div class="mark" style="background:var(--orange)">&#10003;</div>
+        <div><h3>Waiver, before you arrive</h3><p>Every racer needs a signed liability waiver. Sign it online ahead of time (link below) so check-in takes minutes, not the whole party.</p></div>
+      </div>
+    </div>
+    <div class="callout"><b>Heads up:</b> anyone under 18 needs a parent or legal guardian to sign their waiver &mdash; it can't be signed by another adult on their behalf.</div>
+  </section>
+
+  <section class="waiver-card">
+    <div class="section-title"><span class="dot" style="background:var(--yellow)"></span>Do this first</div>
+    <h2 class="display">Sign the waiver</h2>
+    <p>Takes about 2 minutes. Select K1 Speed &mdash; Anaheim when it asks for a location.</p>
+    <a class="btn" href="https://www.k1speed.com/waiver.html" target="_blank" rel="noopener">Sign at k1speed.com &rarr;</a>
+    <div class="fineprint">Parents/guardians: sign for any racer under 18.</div>
+  </section>
+
+  <footer class="page">
+    <div class="display">SEE YOU ON THE GRID! 🏁</div>
+    <p>Got questions? Just reply to the text you got this link from.</p>
+  </footer>
+</div>
